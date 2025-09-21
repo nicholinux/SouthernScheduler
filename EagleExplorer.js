@@ -20,8 +20,8 @@ const csvWriter = createCsvWriter({
     {id: 'days', title: 'Days'},
     {id: 'start_time', title: 'Start Time'},
     {id: 'end_time', title: 'End Time'},
-    {id: 'location', title: 'Location'},
-    {id: 'seats_available', title: 'Seats Available'}
+    {id: 'location', title: 'Location'}, // not yet working
+    {id: 'seats_available', title: 'Seats Available'} // not yet working
   ]
 });
 
@@ -42,7 +42,7 @@ async function getSubjectOptions(term_code) {
   return subjects;
 }
 
-// Step 2: For each subject, set up the query structure (do not actually query yet)
+// Step 2: Query structure for course lookup page
 async function fetchCoursesForSubject(term_code, subject_code, campus_code) {
   const url = 'https://coursesearch.georgiasouthern.edu/search/';
   const formData = {
@@ -168,7 +168,7 @@ async function fetchCourses(formData) {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'User-Agent': 'Mozilla/5.0 (compatible; EagleExplorer/1.0)'
   };
-  // Use qs to encode arrays as repeated keys (campus=10&campus=20)
+  // Use qs to encode arrays as repeated keys 
   const response = await axios.post(url, qs.stringify(formData, { arrayFormat: 'repeat' }), { headers });
   return response.data;
 }
@@ -197,7 +197,6 @@ function parseCoursesFromHtml(html) {
     }
     // Meeting patterns: inside the 10th td (index 9)
     const timeCell = $(tds[9]);
-    // There may be multiple <table class="table-course-days"> blocks per cell, but in your sample there is one per course
     timeCell.find('table.table-course-days').each((_, mtgTable) => {
       // Days: look for <td class="day active">X</td>
       let days = '';
